@@ -10,7 +10,8 @@
   "content_scripts": [
     {
       "matches": ["https://dictionary.cambridge.org/dictionary/english/*"],
-      "js": ["content-script.js"]
+      "js": ["content-script.js"],
+      "css": ["./public/override.css"]
     }
   ]
 }
