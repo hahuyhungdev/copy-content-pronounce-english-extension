@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Copy content pronounce",
+  "description": "Copy content pronounce",
+  "version": "1.0",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_popup": "./public/index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://dictionary.cambridge.org/dictionary/english/*"],
+      "js": ["content-script.js"]
+    }
+  ]
+}

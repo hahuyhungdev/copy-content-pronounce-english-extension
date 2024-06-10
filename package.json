@@ -1,0 +1,16 @@
+{
+  "name": "prompt-gpt-extension",
+  "version": "1.0.1",
+  "description": "All the course files for the Tailwind CSS tutorial on the Net Ninja YouTube channel.",
+  "main": "index.js",
+  "scripts": {
+    "build-css": "tailwindcss build src/styles.css -o public/styles.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "tailwindcss": "^1.4.6"
+  }
+}
