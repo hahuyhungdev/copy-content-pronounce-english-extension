@@ -1,111 +1,108 @@
-// Get the textarea element by its ID
-const textareaElement = document.getElementById("prompt-textarea");
-const parentDiv = document.querySelector('div[role="presentation"]');
+(function () {
+  ("use strict");
 
-// Create a container div that spans the full width
-const containerDiv = document.createElement("div");
-containerDiv.style.width = "100%";
-containerDiv.style.textAlign = "center"; // Center-align the contents
-containerDiv.style.marginBottom = "10px"; // Add some bottom margin
-containerDiv.style.zIndex = "1000"; // Ensure the container is on top
+  function copyToClipboard(element) {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    try {
+      document.execCommand("copy");
+      console.log("Content copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy content", err);
+    }
+    selection.removeAllRanges();
+  }
+  // Throttle function
+  function throttle(func, limit) {
+    let inThrottle;
+    return function () {
+      const args = arguments;
+      const context = this;
+      if (!inThrottle) {
+        func.apply(context, args);
+        inThrottle = true;
+        setTimeout(() => (inThrottle = false), limit);
+      }
+    };
+  }
 
-// Create an input field
-const inputElement = document.createElement("input");
-inputElement.placeholder = "Enter a prompt value";
-inputElement.classList.add(
-  "px-2",
-  "h-8",
-  "rounded-lg",
-  "bg-white",
-  "text-black",
-  "ml-8"
-);
+  // Add a copy button to each element with class dpron-i
+  document.querySelectorAll(".dpron-i").forEach(function (element) {
+    const copyButton = document.createElement("button");
+    copyButton.textContent = "Copy";
+    copyButton.style.marginLeft = "10px"; // Adjust style as needed
+    element.appendChild(copyButton);
 
-// Create a submit button for the input
-const submitInput = document.createElement("button");
-submitInput.textContent = "Submit";
-submitInput.classList.add(
-  "px-2",
-  "h-8",
-  "rounded-lg",
-  "bg-white",
-  "text-black"
-);
-
-// Create a select (dropdown) element for prompt options
-const selectElement = document.createElement("select");
-selectElement.classList.add("px-2", "rounded-lg", "bg-white", "text-black");
-selectElement.style.width = "250px";
-
-// Function to update the select options
-function updateSelectOptions(options) {
-  selectElement.innerHTML = "";
-  options.forEach((optionText) => {
-    const option = document.createElement("option");
-    option.value = optionText;
-    option.textContent = optionText;
-    selectElement.appendChild(option);
+    // copyButton.addEventListener("click", function () {
+    //   const ipaElement = element.querySelector(".ipa.dipa.lpr-2.lpl-1");
+    //   if (ipaElement) {
+    //     copyToClipboard(ipaElement);
+    //   } else {
+    //     console.error("No .ipa.dipa.lpr-2.lpl-1 element found inside .dpron-i");
+    //   }
+    // });
+    copyButton.addEventListener("click", function () {
+      // const ipaElement = element.querySelector(".ipa.dipa.lpr-2.lpl-1");
+      // if (ipaElement) {
+      //   copyToClipboard(ipaElement);
+      // } else {
+      //   console.error("No .ipa.dipa.lpr-2.lpl-1 element found inside .dpron-i");
+      // }
+      document
+        .querySelectorAll(".ipa.dipa.lpr-2.lpl-1")
+        .forEach(function (element) {
+          element.addEventListener(
+            "click",
+            throttle(function () {
+              copyToClipboard(element);
+            }, 3000)
+          ); // 3 seconds throttle
+        });
+    });
   });
-}
 
-const storedOptionsLocal = localStorage.getItem("promptOptions");
-let parsedOptionLocal = storedOptionsLocal && JSON.parse(storedOptionsLocal);
-
-// Add default prompt options to the select element
-const defaultOptions = [
-  "Translate the content below in to English, Correct Grammar, Correct Spelling; Better writing (more clear and clean) Translate the content below into English, Content",
-  "You are a senior dev, pls improve code, optimize, clarify, efficiency, and ensuring it adheres to best practices.",
-];
-let optionsSelect = parsedOptionLocal || defaultOptions;
-
-updateSelectOptions(optionsSelect);
-
-// Add a click event listener to the submit button for adding new options
-submitInput.addEventListener("click", function () {
-  const inputValue = inputElement.value.trim();
-  if (inputValue) {
-    optionsSelect.push(inputValue);
-    localStorage.setItem("promptOptions", JSON.stringify(optionsSelect));
-    updateSelectOptions(optionsSelect); // Update the select options
-    inputElement.value = "";
-  }
-});
-
-// Create a submit button for selecting an option
-const submitSelect = document.createElement("button");
-submitSelect.textContent = "Submit Option";
-submitSelect.classList.add(
-  "px-2",
-  "h-8",
-  "rounded-lg",
-  "bg-white",
-  "text-black"
-);
-
-// Add a click event listener to the submit button for selecting options
-submitSelect.addEventListener("click", function () {
-  const selectedOption = selectElement.value;
-  if (selectedOption && textareaElement) {
-    textareaElement.value += selectedOption + " ";
-    textareaElement.style.height = "70px !important";
-    textareaElement.classList.add("h-[70px]");
-  } else {
-    console.error('Element with ID "prompt-textarea" not found');
-  }
-});
-
-// Append the select element and submit button to the container div
-containerDiv.appendChild(selectElement);
-containerDiv.appendChild(submitSelect);
-containerDiv.appendChild(inputElement);
-containerDiv.appendChild(submitInput);
-
-// Update the CSS for the children elements
-inputElement.style.marginLeft = "20px"; // Example CSS for input
-// Example CSS for selectElement
-
-// Calculate the middle index of the child nodes within the parentDiv
-const middleIndex = Math.floor(parentDiv.childNodes.length / 2);
-
-// Append the container div to the parentDiv
-parentDiv.insertBefore(containerDiv, parentDiv.childNodes[middleIndex]);
+  // Add hover effect with CSS
+  const style = document.createElement("style");
+  style.textContent = `
+        .ipa.dipa.lpr-2.lpl-1 {
+            cursor: pointer;
+            position: relative;
+        }
+        .ipa.dipa.lpr-2.lpl-1::after {
+            content: 'Click to copy';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .ipa.dipa.lpr-2.lpl-1:hover::after {
+            opacity: 1;
+        }
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 1;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+    `;
+  document.head.appendChild(style);
+})();
